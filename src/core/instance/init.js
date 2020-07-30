@@ -12,10 +12,9 @@ import { extend, mergeOptions, formatComponentName } from '../util/index'
 
 let uid = 0
 
-debugger
 
 export function initMixin (Vue: Class<Component>) {
-  //挂载_init方法
+  //挂载_init方法,_init主要是在new vue的时候给vue对象挂载传入对象，和初始化的data，mixin等
   Vue.prototype._init = function (options?: Object) {
     const vm: Component = this
     // a uid

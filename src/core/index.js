@@ -1,9 +1,9 @@
-import Vue from './instance/index'
-import { initGlobalAPI } from './global-api/index'
-import { isServerRendering } from 'core/util/env'
+import Vue from './instance/index' //在文件中声明vue，并进行初始化对象挂载
+import { initGlobalAPI } from './global-api/index' //给vue挂载区全局api，set，del，nextTick
+import { isServerRendering } from 'core/util/env' //环境判断挂载
 import { FunctionalRenderContext } from 'core/vdom/create-functional-component'
 
-initGlobalAPI(Vue)
+initGlobalAPI(Vue) 
 
 Object.defineProperty(Vue.prototype, '$isServer', {
   get: isServerRendering

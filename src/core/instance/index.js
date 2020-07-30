@@ -12,11 +12,12 @@ function Vue (options) {
     warn('Vue is a constructor and should be called with the `new` keyword')
   }
   console.log(this);
-  debugger
-  
+  //给vue挂载方法
   this._init(options)
 }
 
+
+//通过传入vue方法，对vue进行初始化挂载
 initMixin(Vue)
 stateMixin(Vue)
 eventsMixin(Vue)
