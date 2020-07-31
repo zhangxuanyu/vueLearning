@@ -13,7 +13,7 @@
     "types/*.d.ts"
   ],
   "sideEffects": false,
-  "scripts": {
+  "scripts": { 
     "dev": "rollup -w -c scripts/config.js --environment TARGET:web-full-dev",
     "dev:cjs": "rollup -w -c scripts/config.js --environment TARGET:web-runtime-cjs-dev",
     "dev:esm": "rollup -w -c scripts/config.js --environment TARGET:web-runtime-esm",

@@ -22,6 +22,8 @@ Vue.prototype.$mount = function (
   el = el && query(el)
 
   /* istanbul ignore if */
+  console.log('这是入口文件的参数el,appjs中的el传参'+JSON.stringify(el))
+  //检查模板替换中的el是否是整个html或者body
   if (el === document.body || el === document.documentElement) {
     process.env.NODE_ENV !== 'production' && warn(
       `Do not mount Vue to <html> or <body> - mount to normal elements instead.`

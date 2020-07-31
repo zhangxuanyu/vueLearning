@@ -11,6 +11,7 @@ function Vue (options) {
   ) {
     warn('Vue is a constructor and should be called with the `new` keyword')
   }
+  debugger
   console.log(this);
   //给vue挂载方法
   this._init(options)

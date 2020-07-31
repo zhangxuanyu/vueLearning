@@ -29,6 +29,8 @@ const aliases = require('./alias')
 const resolve = p => {
   const base = p.split('/')[0]
   if (aliases[base]) {
+    console.log(aliases[base]);
+    console.log(p.slice(base.length + 1));
     return path.resolve(aliases[base], p.slice(base.length + 1))
   } else {
     return path.resolve(__dirname, '../', p)
@@ -213,6 +215,7 @@ const builds = {
   }
 }
 
+//配置config
 function genConfig (name) {
   const opts = builds[name]
   const config = {
@@ -263,7 +266,10 @@ function genConfig (name) {
   return config
 }
 
+//package.json 中运行不同的命令，给process.env.TARGET不同的值然后配置出不同的config
 if (process.env.TARGET) {
+  console.log('执行webapck'+process.env.TARGET);
+  //webpack等执行需要export一个object或者array  （export an options object, or an array of options objects
   module.exports = genConfig(process.env.TARGET)
 } else {
   exports.getBuild = genConfig
