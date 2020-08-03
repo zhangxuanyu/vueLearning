@@ -21,6 +21,7 @@ import {
 export let activeInstance: any = null
 export let isUpdatingChildComponent: boolean = false
 
+//闭包存储上次改动的值，并且把改动的vm赋值出来
 export function setActiveInstance(vm: Component) {
   const prevActiveInstance = activeInstance
   activeInstance = vm
@@ -29,6 +30,7 @@ export function setActiveInstance(vm: Component) {
   }
 }
 
+//触发生命周期的回调
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
@@ -333,6 +335,7 @@ export function deactivateChildComponent (vm: Component, direct?: boolean) {
   }
 }
 
+//触发hook回调
 export function callHook (vm: Component, hook: string) {
   // #7573 disable dep collection when invoking lifecycle hooks
   pushTarget()
