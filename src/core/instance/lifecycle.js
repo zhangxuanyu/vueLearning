@@ -30,7 +30,7 @@ export function setActiveInstance(vm: Component) {
   }
 }
 
-//触发生命周期的回调
+//初始化生命周期
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
@@ -59,18 +59,19 @@ export function initLifecycle (vm: Component) {
 
 export function lifecycleMixin (Vue: Class<Component>) {
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
+    debugger
     const vm: Component = this
     const prevEl = vm.$el
     const prevVnode = vm._vnode
     const restoreActiveInstance = setActiveInstance(vm)
-    vm._vnode = vnode
+    vm._vnode = vnode//引用地址改变，不影响另外引用的值
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
     if (!prevVnode) {
-      // initial render
+      // initial render 初始化渲染
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
     } else {
-      // updates
+      // updates  todozj:如何比较之前的node和现在的node来进行渲染
       vm.$el = vm.__patch__(prevVnode, vnode)
     }
     restoreActiveInstance()
@@ -338,6 +339,7 @@ export function deactivateChildComponent (vm: Component, direct?: boolean) {
 //触发hook回调
 export function callHook (vm: Component, hook: string) {
   // #7573 disable dep collection when invoking lifecycle hooks
+  //在调用生命周期钩子时禁用dep收集
   pushTarget()
   const handlers = vm.$options[hook]
   const info = `${hook} hook`

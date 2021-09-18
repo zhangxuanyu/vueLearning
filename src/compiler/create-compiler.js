@@ -5,7 +5,9 @@ import { detectErrors } from './error-detector'
 import { createCompileToFunctionFn } from './to-function'
 
 export function createCompilerCreator (baseCompile: Function): Function {
+  debugger
   return function createCompiler (baseOptions: CompilerOptions) {
+    debugger
     function compile (
       template: string,
       options?: CompilerOptions

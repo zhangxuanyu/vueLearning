@@ -9,7 +9,6 @@ var config = {
 firebase.initializeApp(config)
 
 var usersRef = firebase.database().ref('users')
-
 // create Vue app
 var app = new Vue({
   // element to mount to
@@ -39,7 +38,8 @@ var app = new Vue({
       return Object.keys(validation).every(function (key) {
         return validation[key]
       })
-    }
+    },
+    valTest:12
   },
   // methods
   methods: {

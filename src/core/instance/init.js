@@ -3,8 +3,8 @@
 import config from '../config'
 import { initProxy } from './proxy'//初始化渲染时进行提示输出
 import { initState } from './state'//初始化vue里面的对象如data，methods，prop，如有错误进行输出提示
-import { initRender } from './render'//(初始化虚拟dom)
-import { initEvents } from './events'
+import { initRender } from './render'//(初始化虚拟dom，并动态监听attrs和listener)
+import { initEvents } from './events'//初始化event
 import { mark, measure } from '../util/perf'
 import { initLifecycle, callHook } from './lifecycle'
 import { initProvide, initInjections } from './inject'
@@ -14,15 +14,17 @@ let uid = 0
 
 
 export function initMixin (Vue: Class<Component>) {
-  //挂载_init方法,_init主要是在new vue的时候给vue对象挂载传入对象，和初始化的data，mixin等
-  debugger
+  //挂载_init方法,_init主要是在new vue的时候给vue对象挂载传入对象，
+  //如果是开发环境则开始通过initProxy对vm的render进行检查，并给出报错信息
+  //初始化生命周期，事件，渲染执行beforecreated，Inject，data，methods，prop，provide，
+  //执行created，然后开始挂载到相应dom上
   Vue.prototype._init = function (options?: Object) {
     const vm: Component = this
     // a uid
     vm._uid = uid++
 
     let startTag, endTag
-    /* istanbul ignore if */
+    /* istanbul ignore if 开发环境 */
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
       startTag = `vue-perf-start:${vm._uid}`
       endTag = `vue-perf-end:${vm._uid}`
@@ -31,11 +33,12 @@ export function initMixin (Vue: Class<Component>) {
 
     // a flag to avoid this being observed
     vm._isVue = true
-    // merge options
+    // merge options  合并options
     if (options && options._isComponent) {
       // optimize internal component instantiation
       // since dynamic options merging is pretty slow, and none of the
       // internal component options needs special treatment.
+      //优化内部组件实例化.因为动态选项合并非常缓慢，而且内部组件选项都不需要特殊处理。 todozj:合并options
       initInternalComponent(vm, options)
     } else {
       vm.$options = mergeOptions(
@@ -44,7 +47,7 @@ export function initMixin (Vue: Class<Component>) {
         vm
       )
     }
-    /* istanbul ignore else */
+    /* istanbul ignore else 开发环境初始化proxy */
     if (process.env.NODE_ENV !== 'production') {
       initProxy(vm)
     } else {
@@ -55,13 +58,13 @@ export function initMixin (Vue: Class<Component>) {
     initLifecycle(vm)
     initEvents(vm)
     initRender(vm)
-    callHook(vm, 'beforeCreate')
-    initInjections(vm) // resolve injections before data/props
-    initState(vm)
-    initProvide(vm) // resolve provide after data/props
-    callHook(vm, 'created')
+    callHook(vm, 'beforeCreate')//执行beforeCreate
+    initInjections(vm) // resolve injections before data/props 查找
+    initState(vm)//初始化vue里面的对象如data，methods，prop，如有错误进行输出提示
+    initProvide(vm) // 初始化provide，如果是方法，则执行方法获取值
+    callHook(vm, 'created')//执行created
 
-    /* istanbul ignore if */
+    /* istanbul ignore if 开发环境格式化组件名 todozj:组件名格式化*/
     if (process.env.NODE_ENV !== 'production' && config.performance && mark) {
       vm._name = formatComponentName(vm, false)
       mark(endTag)

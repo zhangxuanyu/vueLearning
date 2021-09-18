@@ -4,7 +4,8 @@
     <meta charset="utf-8">
     <title>Vue.js modal component example</title>
     <!-- Delete ".min" for console warnings in development -->
-    <script src="../../dist/vue.min.js"></script>
+    <!-- <script src="../../dist/vue.min.js"></script> -->
+    <script src="../../dist/vue.js"></script>
     <link rel="stylesheet" href="style.css">
   </head>
   <body>
@@ -57,7 +58,11 @@
     <script>
       // register modal component
       Vue.component('modal', {
-        template: '#modal-template'
+        template: '#modal-template',
+        inject:['aaa'],
+        created() {
+          console.log(this.aaa)
+        },
       })
 
       // start app
@@ -65,6 +70,11 @@
         el: '#app',
         data: {
           showModal: false
+        },
+        provide(){
+          return {
+            aaa:'bbb'
+          }
         }
       })
     </script>

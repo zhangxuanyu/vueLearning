@@ -7,7 +7,7 @@ import {
   handleError,
   defineReactive
 } from '../util/index'
-
+//todozj:查看如何creat虚拟dom
 import { createElement } from '../vdom/create-element'
 import { installRenderHelpers } from './render-helpers/index'
 import { resolveSlots } from './render-helpers/resolve-slots'
@@ -28,6 +28,10 @@ export function initRender (vm: Component) {
   // so that we get proper render context inside it.
   // args order: tag, data, children, normalizationType, alwaysNormalize
   // internal version is used by render functions compiled from templates
+  //绑定createElement fn到这个实例
+  //以便我们在里面得到适当的渲染上下文。
+  //参数顺序:tag, data, children, normalizationType, alwaysNormalize
+  //内部版本由模板编译的渲染函数使用
   vm._c = (a, b, c, d) => createElement(vm, a, b, c, d, false)
   // normalization is always applied for the public version, used in
   // user-written render functions.
@@ -60,6 +64,7 @@ export function setCurrentRenderingInstance (vm: Component) {
 
 export function renderMixin (Vue: Class<Component>) {
   // install runtime convenience helpers
+  //todozj:添加了什么给vue.prototype
   installRenderHelpers(Vue.prototype)
 
   Vue.prototype.$nextTick = function (fn: Function) {
@@ -70,6 +75,7 @@ export function renderMixin (Vue: Class<Component>) {
     const vm: Component = this
     const { render, _parentVnode } = vm.$options
 
+    //如果有父级则对solt进行处理
     if (_parentVnode) {
       vm.$scopedSlots = normalizeScopedSlots(
         _parentVnode.data.scopedSlots,
@@ -80,6 +86,8 @@ export function renderMixin (Vue: Class<Component>) {
 
     // set parent vnode. this allows render functions to have access
     // to the data on the placeholder node.
+    //设置父节点。这允许渲染函数访问
+    //到占位符节点上的数据。
     vm.$vnode = _parentVnode
     // render self
     let vnode
@@ -87,7 +95,9 @@ export function renderMixin (Vue: Class<Component>) {
       // There's no need to maintain a stack because all render fns are called
       // separately from one another. Nested component's render fns are called
       // when parent component is patched.
+      // 不需要维护一个堆栈，因为所有渲染fns都是单独调用的。当父组件被修补时，嵌套组件的渲染fns被调用。
       currentRenderingInstance = vm
+      //把vm形式为{$el:div#app,_data:{showModel:false}...}转成vnode，形式为{tag:div,data:{attrs:{id:'#app'}}...}
       vnode = render.call(vm._renderProxy, vm.$createElement)
     } catch (e) {
       handleError(e, vm, `render`)
@@ -120,6 +130,7 @@ export function renderMixin (Vue: Class<Component>) {
           vm
         )
       }
+      //createEmptyVNode 得到 VNode {tag: undefined, data: undefined, children: undefined, text: "", elm: undefined, …}
       vnode = createEmptyVNode()
     }
     // set parent

@@ -14,12 +14,14 @@ export function initProvide (vm: Component) {
 }
 
 export function initInjections (vm: Component) {
+  //获取vm所有的inject
   const result = resolveInject(vm.$options.inject, vm)
   if (result) {
     toggleObserving(false)
     Object.keys(result).forEach(key => {
       /* istanbul ignore else */
       if (process.env.NODE_ENV !== 'production') {
+        //动态监听
         defineReactive(vm, key, result[key], () => {
           warn(
             `Avoid mutating an injected value directly since the changes will be ` +
@@ -50,6 +52,7 @@ export function resolveInject (inject: any, vm: Component): ?Object {
       if (key === '__ob__') continue
       const provideKey = inject[key].from
       let source = vm
+      //不停的找vm父级的provide并且放入inject
       while (source) {
         if (source._provided && hasOwn(source._provided, provideKey)) {
           result[key] = source._provided[provideKey]

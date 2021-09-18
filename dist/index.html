@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>test</title>
+  </head>
+  <body>
+    <div id="app">
+        {{ message }}
+    </div>
+    <!-- 注意这里引入的vue.js文件 -->
+    <script src="../../dist/vue.js"></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data () {
+                return {
+                    message: 'hello world'
+                }
+            }
+        })
+    </script>
+  </body>
+</html>

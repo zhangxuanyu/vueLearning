@@ -67,6 +67,8 @@ function initProps (vm: Component, propsOptions: Object) {
   const props = vm._props = {}
   // cache prop keys so that future props updates can iterate using Array
   // instead of dynamic object key enumeration.
+  //缓存prop键，以便以后的prop更新可以使用Array进行迭代
+  //而不是动态对象键枚举。
   const keys = vm.$options._propKeys = []
   const isRoot = !vm.$parent
   // root instance props should be converted
@@ -76,9 +78,10 @@ function initProps (vm: Component, propsOptions: Object) {
   for (const key in propsOptions) {
     keys.push(key)
     const value = validateProp(key, propsOptions, propsData, vm)
-    /* istanbul ignore else */
+    /* istanbul ignore else 开发环境*/
     if (process.env.NODE_ENV !== 'production') {
       const hyphenatedKey = hyphenate(key)
+      //prop是否是保留字段
       if (isReservedAttribute(hyphenatedKey) ||
           config.isReservedAttr(hyphenatedKey)) {
         warn(
@@ -86,6 +89,7 @@ function initProps (vm: Component, propsOptions: Object) {
           vm
         )
       }
+      //添加一个动态监听，如果有改动，则报错无法直接更改
       defineReactive(props, key, value, () => {
         if (!isRoot && !isUpdatingChildComponent) {
           warn(
@@ -171,8 +175,8 @@ function initComputed (vm: Component, computed: Object) {
   // $flow-disable-line
   const watchers = vm._computedWatchers = Object.create(null)
   // computed properties are just getters during SSR
+  //基本所有的computed都是function，除非采取data中的声明方式，如果是服务端渲染ssr则不会声明一个watcher，只会是一个getter
   const isSSR = isServerRendering()
-
   for (const key in computed) {
     const userDef = computed[key]
     const getter = typeof userDef === 'function' ? userDef : userDef.get
@@ -196,6 +200,7 @@ function initComputed (vm: Component, computed: Object) {
     // component-defined computed properties are already defined on the
     // component prototype. We only need to define computed properties defined
     // at instantiation here.
+    //组件定义的计算属性已经在组件原型。我们只需要在这里定义在实例化时定义的计算属性
     if (!(key in vm)) {
       defineComputed(vm, key, userDef)
     } else if (process.env.NODE_ENV !== 'production') {
@@ -213,6 +218,7 @@ export function defineComputed (
   key: string,
   userDef: Object | Function
 ) {
+  //如果是ssr，则shouldCache是false,会createGetterInvoker直接返回数据，否则还会对computed进行处理
   const shouldCache = !isServerRendering()
   if (typeof userDef === 'function') {
     sharedPropertyDefinition.get = shouldCache
@@ -321,10 +327,12 @@ export function stateMixin (Vue: Class<Component>) {
   // flow somehow has problems with directly declared definition object
   // when using Object.defineProperty, so we have to procedurally build up
   // the object here.
+  //给vue挂载data。prop，set，delete，watch等方法
   const dataDef = {}
   dataDef.get = function () { return this._data }
   const propsDef = {}
   propsDef.get = function () { return this._props }
+  //如果是开发环境，推出警告，不允许替换data和props
   if (process.env.NODE_ENV !== 'production') {
     dataDef.set = function () {
       warn(
